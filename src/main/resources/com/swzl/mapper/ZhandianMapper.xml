@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--namespace 名称空间，指定对哪个接口进行映射-->
+<mapper namespace="com.swzl.mapper.ZhandianMapper">
+    <insert id="addZD">
+insert into zhaolingdian(bianhao,zhandianmingcheng,jianjie,fuzeren,lianxidianhua,youxiang,dizhi,fuwushijian,addtime)
+values(#{bianhao},#{zhandianmingcheng},#{jianjie},#{fuzeren},#{lianxidianhua},#{youxiang},#{dizhi},#{fuwushijian},#{addtime})
+    </insert>
+    <delete id="deleteZLDById">
+          delete from zhaolingdian where id=#{id}
+    </delete>
+    <!--
+    resultMap:
+    定义resultMap标签，在<select>标签中，使用resultMap属性替换resultType属性
+    id:唯一标识
+    type:映射的类型，支持别名
+    <resultMap id="userResultMap" type="com.swzl.entity.User">
+           id:完成主键字段的映射
+              column:表的列名
+              property:实体类的属性名
+           result:完成一般字段的映射
+             column:表的列名
+              property:实体类的属性名
+           把数据库user_name字段名转换成实体类中的username属性名
+    </resultMap>
+     -->
+
+
+    <select id="findByZhanDianName" resultType="com.swzl.entity.Zhandian">
+        select * from zhaolingdian
+        <where>zhandianmingcheng=#{zhandianmingcheng}</where>
+    </select>
+    <select id="findZhanDianList" resultType="com.swzl.entity.Zhandian">
+        SELECT * FROM zhaolingdian  ORDER BY addtime DESC LIMIT #{startCount},#{endCount}
+    </select>
+    <select id="findZhanDianTotal" resultType="java.lang.Integer">
+       select count(id) from zhaolingdian
+    </select>
+    <select id="findZhanDianById" resultType="com.swzl.entity.Zhandian">
+        select * from zhaolingdian
+        <where>id=#{id}</where>
+    </select>
+    <select id="findZDByName" resultType="com.swzl.entity.Zhandian">
+        select id,zhandianmingcheng,dizhi,addtime from zhaolingdian
+        <where>
+            <if test="zhandianmingcheng != null and zhandianmingcheng !=''">
+                zhandianmingcheng like #{zhandianmingcheng} ORDER BY addtime DESC
+            </if>
+        </where>
+    </select>
+    <select id="findZhanDianByBh" resultType="com.swzl.entity.Zhandian">
+        select * from zhaolingdian
+        <where>bianhao=#{bianhao}</where>
+    </select>
+    <select id="findAllZhanDian" resultType="com.swzl.entity.Zhandian">
+        select * from zhaolingdian ORDER BY addtime DESC
+    </select>
+</mapper>

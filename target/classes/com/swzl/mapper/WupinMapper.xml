@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--namespace 名称空间，指定对哪个接口进行映射-->
+<mapper namespace="com.swzl.mapper.WupinMapper">
+    <!--招领审核新增-->
+    <insert id="addZLSH" useGeneratedKeys="true" keyProperty="id" parameterType="Wupin">
+insert into zhaolingshenhe(userid,bianhao,wupinmingcheng,tupian,lianxidianhua,jiandaoriqi,jiandaodizhi,jianshu,zhandianmingcheng,daozhandianriqi,fuzeren,dizhi,zhuangtai,shenhejieguo,addtime)
+values(#{userid},#{bianhao},#{wupinmingcheng},#{tupian},#{lianxidianhua},#{jiandaoriqi},#{jiandaodizhi},#{jianshu},#{zhandianmingcheng},#{daozhandianriqi},#{fuzeren},#{dizhi},#{zhuangtai},#{shenhejieguo},#{addtime})
+    </insert>
+    <!--寻物审核表新增-->
+    <insert id="addXWSH" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `xunwushenhe`(userid,bianhao,wupinmingcheng,tupian,shiquren,lianxidianhua,shiquriqi,shiqudizhi,jianshu,zhandianmingcheng,fuzeren,dizhi,zhuangtai,shenhejieguo,addtime)
+        VALUES (#{userid},#{bianhao},#{wupinmingcheng},#{tupian},#{shiquren},#{lianxidianhua},#{shiquriqi},#{shiqudizhi},#{jianshu},#{zhandianmingcheng},#{fuzeren},#{dizhi},#{zhuangtai},#{shenhejieguo},#{addtime})
+    </insert>
+    <!--插入申领表-->
+    <insert id="addSLSH" >
+        INSERT INTO `shenlingshenhe` VALUES (#{id},#{userid},#{bianhao},#{wupinmingcheng},#{tupian},#{lianxidianhua},#{jiandaoriqi},#{jiandaodizhi},#{jianshu},#{zhandianmingcheng},#{daozhandianriqi},#{fuzeren},#{dizhi},#{zhuangtai},#{shenhejieguo},#{addtime})
+    </insert>
+    <!--插入寻物表-->
+    <insert id="addXW">
+        INSERT INTO `shiwuxunzhao`(userid,bianhao,wupinmingcheng,tupian,shiquren,lianxidianhua,shiquriqi,shiqudizhi,jianshu,zhandianmingcheng,fuzeren,dizhi,zhuangtai,addtime)
+        VALUES (#{userid},#{bianhao},#{wupinmingcheng},#{tupian},#{shiquren},#{lianxidianhua},#{shiquriqi},#{shiqudizhi},#{jianshu},#{zhandianmingcheng},#{fuzeren},#{dizhi},#{zhuangtai},#{addtime})
+    </insert>
+    <insert id="addZL">
+         INSERT INTO `shiwuzhaoling`(userid,bianhao,wupinmingcheng,tupian,lianxidianhua,jiandaoriqi,jiandaodizhi,jianshu,zhandianmingcheng,daozhandianriqi,fuzeren,dizhi,zhuangtai,addtime)
+        VALUES (#{userid},#{bianhao},#{wupinmingcheng},#{tupian},#{lianxidianhua},#{jiandaoriqi},#{jiandaodizhi},#{jianshu},#{zhandianmingcheng},#{daozhandianriqi},#{fuzeren},#{dizhi},#{zhuangtai},#{addtime})
+    </insert>
+    <update id="updateXWSH">
+        update xunwushenhe set `shenhejieguo`='同意'
+        <where>id = #{id}</where>
+    </update>
+    <update id="updateJJXWSH">
+        update xunwushenhe set `shenhejieguo`='拒绝'
+        <where>id = #{id}</where>
+    </update>
+    <!--管理员根据寻物表物品id改变该列信息状态-->
+    <update id="updateXWXZ">
+        update shiwuxunzhao set `zhuangtai`='已完成'
+        <where>id=#{id} AND zhuangtai='丢失中'</where>
+    </update>
+    <update id="updateZLSH">
+        update zhaolingshenhe set `shenhejieguo`='同意'
+        <where>id = #{id}</where>
+    </update>
+    <update id="updateJJZLSH">
+        update zhaolingshenhe set `shenhejieguo`='拒绝'
+        <where>id = #{id}</where>
+    </update>
+    <update id="updateSWZL">
+        update shiwuzhaoling set `zhuangtai`='已完成'
+        <where>id=#{id} AND zhuangtai='未领取'</where>
+    </update>
+    <update id="updateSLSH">
+        update shenlingshenhe set zhuangtai='正在进行',`shenhejieguo`='同意'
+        <where>id=#{id}</where>
+    </update>
+    <update id="updateJJSLSH">
+        update shenlingshenhe set `shenhejieguo`='拒绝'
+        <where>id=#{id}</where>
+    </update>
+    <update id="updateSLSHWC">
+        update shenlingshenhe set `zhuangtai`='已完成'
+        <where>id=#{id} AND zhuangtai='正在进行'</where>
+    </update>
+    <!--寻物列表展示-->
+    <select id="findXunWuList" resultType="com.swzl.entity.Wupin">
+    SELECT * FROM shiwuxunzhao WHERE zhuangtai='丢失中' ORDER BY addtime DESC LIMIT #{startCount},#{endCount}
+    </select>
+    <!--寻物列表状态为丢失中公告记录数-->
+    <select id="findXunWuTotal" resultType="java.lang.Integer">
+        select count(id) from shiwuxunzhao WHERE zhuangtai='丢失中'
+    </select>
+    <!--寻物列表按id获取详情-->
+    <select id="findXunWuById" resultType="com.swzl.entity.Wupin">
+        select * from shiwuxunzhao where id=#{id}
+    </select>
+    <!--寻物列表按用户id获取列表-->
+    <select id="findXWByUserId" resultType="com.swzl.entity.Wupin">
+    SELECT * FROM shiwuxunzhao WHERE userid=#{userid} AND zhuangtai='丢失中' ORDER BY addtime DESC
+    </select>
+    <!--寻物搜索状态为丢失中的公告-->
+    <select id="findXunWuByWuPinName" resultType="com.swzl.entity.Wupin">
+        select id,wupinmingcheng,zhuangtai,addtime from shiwuxunzhao
+        <where>
+            <if test="wupinmingcheng != null and wupinmingcheng !=''">
+                zhuangtai='丢失中' and wupinmingcheng like #{wupinmingcheng} ORDER BY addtime DESC
+            </if>
+        </where>
+    </select>
+    <!--寻物表根据id删除某列-->
+    <delete id="deleteXWById">
+        delete from shiwuxunzhao where id=#{id}
+    </delete>
+    <!--获取寻物表全部丢失中的公告-->
+    <select id="findAllXunWu" resultType="com.swzl.entity.Wupin">
+        SELECT * FROM shiwuxunzhao WHERE zhuangtai='丢失中' ORDER BY addtime DESC
+    </select>
+    <!--<select id="searchWupinTotal" resultType="java.lang.Integer">-->
+    <!--select count(a.id) from (select * from shiwuzhaoling-->
+    <!--<where>-->
+    <!--<if test="wupinmingcheng != null and wupinmingcheng !=''">-->
+    <!--type='寻物' and  wupinmingcheng like #{wupinmingcheng}-->
+    <!--</if>-->
+    <!--</where>-->
+    <!--) as a-->
+    <!--</select>-->
+    <select id="findZhaoLingList" resultType="com.swzl.entity.Wupin">
+        SELECT * FROM shiwuzhaoling WHERE zhuangtai='未领取' ORDER BY addtime DESC LIMIT #{startCount},#{endCount}
+    </select>
+    <select id="findZhaoLingTotal" resultType="java.lang.Integer">
+        select count(id) from shiwuzhaoling WHERE zhuangtai='未领取'
+    </select>
+    <select id="findZhaoLingByWuPinName" resultType="com.swzl.entity.Wupin">
+        select id,wupinmingcheng,zhuangtai,addtime from shiwuzhaoling
+        <where>
+            <if test="wupinmingcheng != null and wupinmingcheng !=''">
+                zhuangtai='未领取' and wupinmingcheng like #{wupinmingcheng} ORDER BY addtime DESC
+            </if>
+        </where>
+    </select>
+    <select id="findZhaoLingById" resultType="com.swzl.entity.Wupin">
+      select * from shiwuzhaoling where id=#{id}
+    </select>
+    <select id="findZLByUserId" resultType="com.swzl.entity.Wupin">
+      SELECT * FROM shiwuzhaoling WHERE userid=#{userid} AND zhuangtai='未领取' ORDER BY addtime DESC
+    </select>
+    <delete id="deleteZLById">
+      delete from shiwuzhaoling where id=#{id}
+    </delete>
+    <select id="findXWSHByUserId" resultType="com.swzl.entity.Wupin">
+        SELECT * FROM xunwushenhe WHERE userid=#{userid} AND shenhejieguo='审核中' ORDER BY addtime DESC
+    </select>
+    <select id="findXWSHById" resultType="com.swzl.entity.Wupin">
+        SELECT * FROM xunwushenhe WHERE id=#{id}
+    </select>
+    <delete id="deleteXWSHById">
+        delete from xunwushenhe where id=#{id}
+    </delete>
+    <delete id="deleteZLSHById">
+        delete from zhaolingshenhe where id=#{id}
+    </delete>
+    <delete id="deleteSLSHById">
+        delete from shenlingshenhe where id=#{id}
+    </delete>
+    <select id="findZLSHByUserId" resultType="com.swzl.entity.Wupin">
+        SELECT * FROM zhaolingshenhe WHERE userid=#{userid} AND shenhejieguo='审核中' ORDER BY addtime DESC
+    </select>
+    <select id="findZLSHById" resultType="com.swzl.entity.Wupin">
+        SELECT * FROM zhaolingshenhe WHERE id=#{id}
+    </select>
+    <select id="findSLSHByUserId" resultType="com.swzl.entity.Wupin">
+         SELECT * FROM shenlingshenhe WHERE userid=#{userid} AND shenhejieguo='审核中' ORDER BY addtime DESC
+    </select>
+    <select id="findSLSHById" resultType="com.swzl.entity.Wupin">
+         SELECT * FROM shenlingshenhe WHERE id=#{id}
+    </select>
+    <select id="findAllXWSH" resultType="com.swzl.entity.Wupin">
+         SELECT * FROM xunwushenhe where shenhejieguo='审核中' ORDER BY addtime
+    </select>
+    <select id="findAllXWWC" resultType="com.swzl.entity.Wupin">
+        SELECT * FROM shiwuxunzhao where zhuangtai='已完成' ORDER BY addtime DESC
+    </select>
+    <select id="findAllZLSH" resultType="com.swzl.entity.Wupin">
+       SELECT * FROM zhaolingshenhe where shenhejieguo='审核中' ORDER BY addtime
+    </select>
+    <select id="findAllSWZL" resultType="com.swzl.entity.Wupin">
+         SELECT * FROM shiwuzhaoling where zhuangtai='未领取' ORDER BY addtime DESC
+    </select>
+    <select id="findAllSWZLWC" resultType="com.swzl.entity.Wupin">
+        SELECT * FROM shiwuzhaoling where zhuangtai='已完成' ORDER BY addtime DESC
+    </select>
+    <select id="findAllSLSH" resultType="com.swzl.entity.Wupin">
+         SELECT * FROM shenlingshenhe where shenhejieguo='审核中' ORDER BY addtime
+    </select>
+    <select id="findAllSLSHJX" resultType="com.swzl.entity.Wupin">
+         SELECT * FROM shenlingshenhe where zhuangtai='正在进行' ORDER BY addtime DESC
+    </select>
+    <select id="findAllSLSHWC" resultType="com.swzl.entity.Wupin">
+        SELECT * FROM shenlingshenhe where zhuangtai='已完成' ORDER BY addtime DESC
+    </select>
+    <select id="findSLSHByUserIdAndId" resultType="com.swzl.entity.Wupin">
+         SELECT * FROM shenlingshenhe where id=#{id} and userid=#{userid}
+    </select>
+    <select id="findXWByUserIdWC" resultType="com.swzl.entity.Wupin">
+         SELECT * FROM shiwuxunzhao WHERE userid=#{userid} AND zhuangtai='已完成' ORDER BY addtime DESC
+    </select>
+    <select id="findXWSHByUserIdJJ" resultType="com.swzl.entity.Wupin">
+         SELECT * FROM xunwushenhe WHERE userid=#{userid} AND shenhejieguo='拒绝' ORDER BY addtime DESC
+    </select>
+    <select id="findZLByUserIdWC" resultType="com.swzl.entity.Wupin">
+        SELECT * FROM shiwuzhaoling WHERE userid=#{userid} AND zhuangtai='已完成' ORDER BY addtime DESC
+    </select>
+    <select id="findZLSHByUserIdJJ" resultType="com.swzl.entity.Wupin">
+        SELECT * FROM zhaolingshenhe WHERE userid=#{userid} AND shenhejieguo='拒绝' ORDER BY addtime DESC
+    </select>
+    <select id="findSLSHByUserIdJX" resultType="com.swzl.entity.Wupin">
+         SELECT * FROM shenlingshenhe WHERE userid=#{userid} AND zhuangtai='正在进行' ORDER BY addtime DESC
+    </select>
+    <select id="findSLSHByUserIdWC" resultType="com.swzl.entity.Wupin">
+        SELECT * FROM shenlingshenhe WHERE userid=#{userid} AND zhuangtai='已完成' ORDER BY addtime DESC
+    </select>
+    <select id="findSLSHByUserIdJJ" resultType="com.swzl.entity.Wupin">
+         SELECT * FROM shenlingshenhe WHERE userid=#{userid} AND shenhejieguo='拒绝' ORDER BY addtime DESC
+    </select>
+    <select id="findZhaoLingZDWCTotal" resultType="java.lang.Integer">
+        select count(id) from shiwuzhaoling WHERE bianhao=#{bianhao} AND zhuangtai='已完成'
+    </select>
+    <select id="findZhaoLingZDCFTotal" resultType="java.lang.Integer">
+        select count(id) from shiwuzhaoling WHERE bianhao=#{bianhao} AND zhuangtai='未领取'
+    </select>
+
+
+</mapper>

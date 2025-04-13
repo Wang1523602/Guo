@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--namespace 名称空间，指定对哪个接口进行映射-->
+<mapper namespace="com.swzl.mapper.LiuyanMapper">
+    <!--
+    resultMap:
+    定义resultMap标签，在<select>标签中，使用resultMap属性替换resultType属性
+    id:唯一标识
+    type:映射的类型，支持别名
+
+    <resultMap id="noticeResultMap" type="com.swzl.entity.Notice">
+
+               id:完成主键字段的映射
+                  column:表的列名
+                  property:实体类的属性名
+               result:完成一般字段的映射
+                 column:表的列名
+                  property:实体类的属性名
+               把数据库user_name字段名转换成实体类中的username属性名
+    </resultMap>
+       -->
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `liuyanxinxi`(userid,bianhao,liuyanneirong,liuyanriqi,liuyanren,addtime)
+VALUES (#{userid},#{bianhao},#{liuyanneirong},#{liuyanriqi},#{liuyanren},#{addtime});
+    </insert>
+    <delete id="deleteLYById">
+      delete from liuyanxinxi where id=#{id}
+    </delete>
+    <select id="findLiuYanList" resultType="com.swzl.entity.Liuyan">
+SELECT liuyanren,liuyanneirong,addtime FROM liuyanxinxi  ORDER BY addtime DESC LIMIT #{startCount},#{endCount}
+    </select>
+    <select id="findLiuYanTotal" resultType="java.lang.Integer">
+        select count(id) from liuyanxinxi
+    </select>
+    <select id="findLYByUserId" resultType="com.swzl.entity.Liuyan">
+        SELECT * FROM liuyanxinxi WHERE userid=#{userid} ORDER BY addtime DESC
+    </select>
+    <select id="findAllLY" resultType="com.swzl.entity.Liuyan">
+        SELECT * FROM liuyanxinxi ORDER BY addtime DESC
+    </select>
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--namespace 名称空间，指定对哪个接口进行映射-->
+<mapper namespace="com.swzl.mapper.NoticeMapper">
+    <insert id="addGG">
+insert into gonggao(g_userid,g_username,g_authority,g_title,g_content,g_addtime)
+values(#{g_userid},#{g_username},#{g_authority},#{g_title},#{g_content},#{g_addTime})
+    </insert>
+    <delete id="deleteGGById">
+        delete from gonggao where g_id=#{id}
+    </delete>
+    <!--
+    resultMap:
+    定义resultMap标签，在<select>标签中，使用resultMap属性替换resultType属性
+    id:唯一标识
+    type:映射的类型，支持别名
+
+    <resultMap id="noticeResultMap" type="com.swzl.entity.Notice">
+
+               id:完成主键字段的映射
+                  column:表的列名
+                  property:实体类的属性名
+               result:完成一般字段的映射
+                 column:表的列名
+                  property:实体类的属性名
+               把数据库user_name字段名转换成实体类中的username属性名
+
+        <result column="g_id" property="G_Id"/>
+        <result column="g_userid" property="G_UserId"/>
+        <result column="g_username" property="G_UserName"/>
+        <result column="g_authority" property="G_Authority"/>
+        <result column="g_content" property="G_Content"/>
+        <result column="g_addtime" property="G_AddTime"/>
+    </resultMap>
+       -->
+    <select id="findNotice" resultType="com.swzl.entity.Notice">
+         select * from gonggao order by g_addtime desc LIMIT #{startCount},#{endCount}
+    </select>
+    <select id="findNoticeById" resultType="com.swzl.entity.Notice">
+        select * from gonggao where g_id=#{g_id}
+    </select>
+    <select id="findAllNotice" resultType="com.swzl.entity.Notice">
+        select * from gonggao ORDER BY g_addtime desc
+    </select>
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--namespace 名称空间，指定对哪个接口进行映射-->
+<mapper namespace="com.swzl.mapper.UserMapper">
+    <!--
+    resultMap:
+    定义resultMap标签，在<select>标签中，使用resultMap属性替换resultType属性
+    id:唯一标识
+    type:映射的类型，支持别名
+    <resultMap id="userResultMap" type="com.swzl.entity.User">
+           id:完成主键字段的映射
+              column:表的列名
+              property:实体类的属性名
+           result:完成一般字段的映射
+             column:表的列名
+              property:实体类的属性名
+           把数据库user_name字段名转换成实体类中的username属性名
+
+        <result column="user_name" property="username" />
+        <result column="pass_word" property="password" />
+    </resultMap>
+     -->
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        insert into user(username, password,sex,authority,addtime) values(#{username},#{password},#{sex},#{authority},#{addtime})
+    </insert>
+    <update id="updateGL">
+        update `user` set `authority`='普通管理员'
+        <where>id=#{id}</where>
+    </update>
+    <update id="updateQX">
+        update `user` set `authority`='普通用户'
+        <where>id=#{id}</where>
+    </update>
+    <delete id="delete">
+         delete from user where id=#{id}
+    </delete>
+
+    <select id="findByUsername" resultType="com.swzl.entity.User">
+        select * from user where username=#{username}
+    </select>
+    <select id="findByUserId" resultType="com.swzl.entity.User">
+         select * from user where id=#{userid}
+    </select>
+    <select id="findAllUser" resultType="com.swzl.entity.User">
+        select * from user where authority='普通用户' ORDER BY addtime desc
+    </select>
+    <select id="findAllGLUser" resultType="com.swzl.entity.User">
+         select * from user where authority='普通管理员' ORDER BY addtime desc
+    </select>
+
+</mapper>

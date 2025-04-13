@@ -1,0 +1,6 @@
+#noteEdit textarea {
+    border: #ccc solid 1px;
+    width: 100%;
+    height: 100px;
+    resize: none;
+}
